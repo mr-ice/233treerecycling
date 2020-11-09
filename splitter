@@ -1,0 +1,40 @@
+#!python3
+import pandas as pd
+import numpy as np
+import pdfkit as pdf
+master_list = pd.read_excel('./2020TreeRecyclingRequests.xlsx', sheet_name='Form Responses 1')
+master_list.replace(np.nan, '')
+
+routes = set()
+for i in master_list['Route']:
+    routes.add(i)
+#print(routes)
+
+options = {'orientation' : 'Landscape',
+#           'margin-top': '0.75in',
+           'page-size': 'Letter'}
+pd.set_option('display.max_colwidth', -1)
+for route in routes:
+    writer = pd.ExcelWriter('./2020Split/route_{}.xlsx'.format(route), engine='xlsxwriter')
+    this_route = master_list.loc[master_list['Route'] == route]
+    human_route = this_route[['Name']]
+    human_route['Gate'] = this_route['Gate Code (required if gated access)'].fillna('').astype(str)
+    human_route['Phone'] = this_route['Phone Number'].fillna('').astype(str)
+    human_route['Trees'] = this_route['Number of Trees'].fillna('').astype(str)
+    human_route['Home'] = this_route['Will someone be home'].fillna('').astype(str)
+    human_route['Comment'] = this_route['Comments (special instructions,  where tree or payment is located)'].fillna('')
+    human_route['Address'] = this_route['House #'].astype(str) + ' ' + this_route['Street']  + ' ' + this_route['City']
+    human_route['Apt'] = this_route['Apt. Number'].fillna('').astype(str)
+    human_route['$Cash'] = ' '
+    human_route['$Check'] = ' '
+    human_route['Got'] = 'Y / N'
+    human_route.to_excel(writer)
+    writer.save()
+    df = pd.DataFrame.from_dict(human_route)
+    html_route = f'./2020Split/route_{route}.html'
+    df.to_html(html_route)
+    pdf_route = f'./2020Split/route_{route}.pdf'
+    pdf.from_file(html_route, pdf_route, options=options)
+    csv_route = f'./2020Split/route_{route}.csv'
+    df.to_csv(csv_route, sep=';', encoding='utf-8')
+
