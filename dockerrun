@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# generic docker run with our "mount" stuff, but command/args passed in as if
+# you know what you're doing.
+#
+# for example ./dockerrun splitter ./2020TreeRecycling.xlsx
+# or ./dockerrun bash
+
+entrypoint="$1"
+shift
+
+if ! docker image inspect maker >/dev/null 
+    then ./dockerbuild
+fi
+
+docker run --rm -it --mount type=bind,source="$(pwd)",target=/MT --entrypoint "${entrypoint}" splitter "$@"
