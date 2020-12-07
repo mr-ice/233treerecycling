@@ -1,5 +1,10 @@
 Description:
-This folder is everything needed in order to break up the 1 large file from Google Forms (CSV) into multiple files - one file for each route.  It will save this as as a pdf, html, and csv form.
+This folder is everything needed in order to break up the 1 large file
+from Google Forms (XLSX) into multiple files - one file for each route.
+It will save this as as a pdf, html, and csv form.
+
+Using Python 'natively' with venv:
+
 
 Installation:
 1) Copy the Tree Recycling folder (or just clone the whole repo)
@@ -17,9 +22,23 @@ Instructions (using the Jupyter Notebook format):
 You should now have a csv, html, pdf, and xlsx version of each route.
 
 Instructions (using the splitter script):
-0) run: ". venv/bin/activate"
+0.1) download the Google Docs as an xlsx (hereafter ./2020TreeRecyclingRequests.xlsx
+0.2) run: ". venv/bin/activate"
 1) change input filename on line 5
 2) change output directory name on lines 18, 34, 36, 38
 3) mkdir $output_directory
 4) python3 splitter
 You should now have a csv, html, pdf, and xlsx pdf version of each route.
+
+
+Using Python in Docker:
+
+Installation:
+1) git clone https://github.com/mr-ice/233treerecycling.git
+2) cd 233treerecycling
+3) ./dockerbuild
+
+Instructions using the splitter script:
+0) download the Google Docs as an xlsx (hereafter ./2020TreeRecyclingRequests.xlsx
+1) ./dockerrun splitter ./2020TreeRecyclingRequests.xlsx 
+  a) optionally add --output 2020-Routes to change the name of the output directory
