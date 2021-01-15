@@ -1,1 +1,2 @@
-docker build . -t splitter
+docker build splitter -t splitter
+docker build printer -t printer

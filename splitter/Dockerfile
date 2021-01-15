@@ -8,7 +8,7 @@ RUN tar xvjf wkhtmltopdf-0.9.9-static-amd64.tar.bz2
 RUN mv wkhtmltopdf-amd64 /usr/local/bin/wkhtmltopdf && chmod +x /usr/local/bin/wkhtmltopdf
 
 
-COPY splitter /usr/local/bin
+COPY splitter /usr/local/bin/
 RUN chmod 755 /usr/local/bin/splitter
 
 WORKDIR "/MT"
