@@ -75,7 +75,7 @@ for route in routes:
 
     # fetch the current route as a dataframe from the master_list
     this_route = master_list.loc[master_list['Route'] == route]
-    human_route = this_route[['Name']]
+    human_route = this_route[['Name']].copy()
     human_route['Gate'] = this_route['Gate Code (required if gated access)'].fillna('').astype(str)
     human_route['Phone'] = this_route['Phone Number'].fillna('').astype(str)
     human_route['Trees'] = this_route['Number of Trees'].fillna('').astype(str)
