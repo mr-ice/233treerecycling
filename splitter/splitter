@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-"""Split a Tree Recycling List from Google Docs. Download as an xlsx,
-then run this splitter to output xlsx, csv, and pdf versions of the
-split list. """
+"""Split a Tree Recycling List from Google Docs. 
+
+1. Download as an xlsx
+2. Run ./dockerrun splitter [Filename].xlsx
+
+This will create the xlsx and csv splitting the sheet on the 'Route'
+column values.
+
+TBD: pdf generation through wkhtmltopdf is not optimal, trying a
+nodejs/chromium/puppeteer mechanism next. """
+
 import pandas as pd
 import numpy as np
-import pdfkit as pdf
 import argparse
 import time
 import os
@@ -13,25 +20,49 @@ AP = argparse.ArgumentParser("Tree Route Splitter")
 
 
 AP.add_argument('input',
-                help="Input file should be an xlsx from the tree recycling google doc.")
+                help="Input file should be an xlsx from the tree "
+                "recycling google doc.")
 
 AP.add_argument('--output',
                 help="Output directory, default will be YYYYSplit",
                 default= str(time.localtime().tm_year) + 'Split' )
 
+AP.add_argument('--sheet',
+                help="The name of the sheet with responses "
+                "default is 'Form Responses 1'",
+                default="Form Responses 1")
+
+AP.add_argument('--route-column',
+                help="The name of the column in the sheet with route names "
+                ", default is 'Route'",
+                default="Route")
+
+# AP.add_argument('--orientation',
+#                 default="Landscape",
+#                 help="The orientation of the pdf, either 'Portrait' or"
+#                 " 'Landscape'(default)")
+#
+# AP.add_argument('--page-size',
+#                 default='Letter',
+#                 help="The page size for the pdf output, either 'A4' or"
+#                 " 'Letter'(default)")
+
 args = AP.parse_args()
 
-master_list = pd.read_excel(args.input, sheet_name='Form Responses 1')
+# This loads the master list from the sheet named args.sheet
+master_list = pd.read_excel(args.input, sheet_name=args.sheet)
 master_list.replace(np.nan, '')
 
 routes = set()
-for i in master_list['Route']:
+for i in master_list[args.route_column]:
     routes.add(i)
 #print(routes)
 
-options = {'orientation' : 'Landscape',
-#           'margin-top': '0.75in',
-           'page-size': 'Letter'}
+# options = {
+#             'orientation' : args.orientation,
+# #           'margin-top': '0.75in',
+#             'page-size': args.page_size
+#           }
 pd.set_option('display.max_colwidth', None)
 
 if not os.path.isdir(args.output):
@@ -41,6 +72,8 @@ for route in routes:
     output_filename = f'./{args.output}/route_{route}.'
     writer = pd.ExcelWriter(output_filename + 'xlsx',
             engine='xlsxwriter')
+
+    # fetch the current route as a dataframe from the master_list
     this_route = master_list.loc[master_list['Route'] == route]
     human_route = this_route[['Name']]
     human_route['Gate'] = this_route['Gate Code (required if gated access)'].fillna('').astype(str)
@@ -57,6 +90,7 @@ for route in routes:
     writer.save()
     df = pd.DataFrame.from_dict(human_route)
     df.to_html(output_filename + 'html')
-    pdf.from_file(output_filename + 'html', output_filename + 'pdf', options=options)
+    # removing the wkhtmltopdf writing
+    # pdf.from_file(output_filename + 'html', output_filename + 'pdf', options=options)
     df.to_csv(output_filename + 'csv', sep=';', encoding='utf-8')
 
