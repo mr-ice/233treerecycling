@@ -1,0 +1,17 @@
+#!/usr/bin/node --unhandled-rejections=strict
+const puppeteer = require('puppeteer');
+
+var myArgs = process.argv.slice(2);
+
+async function printPDF(from, to) {
+    var to = from.replace(/\.[^\.]+$/,'') + ".pdf";
+	const browser = await puppeteer.launch({
+            args: ['--disable-dev-shm-usage', '--no-sandbox']
+        });
+	const page = await browser.newPage();
+    await page.goto("file://" + from, {waitUntil: 'networkidle0'});
+    const pdf = await page.pdf({ format: 'Letter', landscape: true, path: to});
+    await browser.close();
+}
+
+printPDF(myArgs[0]);

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Usage: splitfile <file.xlsx> [<outputdir>]
+
+file=$1
+outputdir=${2:-$(date +%Y-Split)}
+
+if ! docker image inspect splitter >/dev/null || \
+   ! docker image inspect printer >/dev/null
+    then ./dockerbuild
+fi
+
+docker run --rm -it --mount type=bind,source="$(pwd)",target=/WorkDir splitter "$file" "--output=$outputdir"

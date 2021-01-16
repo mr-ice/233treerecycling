@@ -1,44 +1,33 @@
 Description:
 This folder is everything needed in order to break up the 1 large file
-from Google Forms (XLSX) into multiple files - one file for each route.
-It will save this as as a pdf, html, and csv form.
-
-Using Python 'natively' with venv:
+from Google Forms (XLSX) into multiple files - one set of files for each
+route.
 
 
-Installation:
-1) Copy the Tree Recycling folder (or just clone the whole repo)
-2) Change directory to the TreeRecycling directory
-3) run: "python3 -m venv venv"
-4) run: ". venv/bin/activate"
-5) run: "pip install -r requirements.txt"
+First Time Setup:
 
-Instructions (using the Jupyter Notebook format):
-0) run: ". venv/bin/activate"
-1) run: "jupyter notebook"
-2) click on "ParseTreePickupMasterList.ipynb"
-3) Update the file name in block 2 to match the master list
-4) Select Cell -> Run All
-You should now have a csv, html, pdf, and xlsx version of each route.
-
-Instructions (using the splitter script):
-0.1) download the Google Docs as an xlsx (hereafter ./2020TreeRecyclingRequests.xlsx
-0.2) run: ". venv/bin/activate"
-1) change input filename on line 5
-2) change output directory name on lines 18, 34, 36, 38
-3) mkdir $output_directory
-4) python3 splitter
-You should now have a csv, html, pdf, and xlsx pdf version of each route.
-
-
-Using Python in Docker:
-
-Installation:
 1) git clone https://github.com/mr-ice/233treerecycling.git
 2) cd 233treerecycling
-3) ./dockerbuild
+3) ./dockerbuild or dockerbuild.cmd
 
-Instructions using the splitter script:
-0) download the Google Docs as an xlsx (hereafter ./2020TreeRecyclingRequests.xlsx
-1) ./dockerrun splitter ./2020TreeRecyclingRequests.xlsx 
-  a) optionally add --output 2020-Routes to change the name of the output directory
+Re-Setup: (Do this if returning after any significant time  or when you
+    know there may be changes)
+
+1) cd 233treerecycling
+2) git pull
+3) ./dockerbuild or dockerbuild.cmd
+
+Split the Tree Recyling Routes:
+
+1) download the Google Docs as an xlsx
+    (for example 2020TreeRecyclingRequests.xlsx)
+
+2) ./splitfile 2020TreeRecyclingRequests.xlsx
+3) ./genpdfs 2020TreeRecyclingRequests.xlsx
+
+    (optional) append --output 2020-Routes to change the name of the
+    output directory to 2020-Routes.   The default is %Y-Routes using
+    the current year, typically the year of pick-up, not the year of the
+    christmas/fundraising season.  Make sure to use the same arguments
+    for both scripts.
+

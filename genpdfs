@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Usage: splitfile <file.xlsx> [<outputdir>]
+
+file=$1
+outputdir=${2:-$(date +%Y-Split)}
+
+if ! docker image inspect splitter >/dev/null || \
+   ! docker image inspect printer >/dev/null
+    then ./dockerbuild
+fi
+
+echo "============================================================"
+echo "Starting to convert to pdf... this may take a few minutes..."
+echo "============================================================"
+echo 'for f in /WorkDir/'${outputdir}'/*.html; do printer/html2pdf "$f"; echo "converted $f"; done' > printer.sh
+docker run --rm -it --mount type=bind,source="$(pwd)",target=/WorkDir --entrypoint="bash" printer "./printer.sh"
