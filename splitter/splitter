@@ -87,7 +87,7 @@ for route in routes:
     human_route['$Check'] = ' '
     human_route['Got'] = 'Y / N'
     human_route.to_excel(writer)
-    writer.save()
+    writer.close()
     df = pd.DataFrame.from_dict(human_route)
     df.to_html(output_filename + 'html')
     # removing the wkhtmltopdf writing

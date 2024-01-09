@@ -1,4 +1,4 @@
-FROM python:3.7.2-slim
+FROM python:3.9.18-slim
 RUN pip3 install --upgrade pip
 RUN pip3 install pandas pdfkit xlrd xlsxwriter
 

@@ -1,4 +1,6 @@
-FROM alpine:edge
+FROM alpine:latest
+
+RUN apk add -X https://dl-cdn.alpinelinux.org/alpine/v3.16/main -u alpine-keys --allow-untrusted
 
 # Installs latest Chromium (85) package.
 RUN apk add --no-cache \
@@ -28,7 +30,9 @@ RUN addgroup -S pptruser && adduser -S -g pptruser pptruser \
     && chown -R pptruser:pptruser /app
 
 # Run everything after as non-privileged user.
-USER pptruser
+# this stopped working for Steve 2024-01-05
+#USER pptruser
+
 
 WORKDIR "/WorkDir"
 
